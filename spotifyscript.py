@@ -6,8 +6,8 @@ import spotipy.util as util
 AUTH_URL = 'https://accounts.spotify.com/api/token'
 auth_response = requests.post(AUTH_URL, {
     'grant_type': 'client_credentials',
-    'client_id': 'YOUR-CLIENT-ID-HERE',
-    'client_secret': 'YOUR-CLIENT-SECRET-ID-HERE',
+    'client_id': '0c73fd524c97444da6dcf18cb94eabd3',
+    'client_secret': '5d35e5da6b804c76aeaa8c936cb4487f',
 })
 auth_response_data = auth_response.json()
 access_token = auth_response_data['access_token']
@@ -17,8 +17,8 @@ headers = {
 #spotipy auth setup
 scope = 'playlist-modify-private'
 token = util.prompt_for_user_token('laser8000', scope,
-                                client_id='YOUR-CLIENT-ID-HERE',
-                                client_secret='YOUR-CLIENT-SECRET-ID-HERE',
+                                client_id='0c73fd524c97444da6dcf18cb94eabd3',
+                                client_secret='5d35e5da6b804c76aeaa8c936cb4487f',
                                 redirect_uri='http://localhost:8080')
 
 # API endpoints to get all the songs
@@ -26,21 +26,6 @@ g1 = "https://api.spotify.com/v1/playlists/3ViW4euqk6opmrgEZV3sEv/tracks?limit=1
 g2 = "https://api.spotify.com/v1/playlists/3ViW4euqk6opmrgEZV3sEv/tracks?offset=100&limit=100"
 g3 = "https://api.spotify.com/v1/playlists/3ViW4euqk6opmrgEZV3sEv/tracks?offset=200&limit=100"
 gets = [g1, g2, g3]
-
-# List of artists to sort by
-a1 = ["i prevail", "parkway drive", "the ghost inside", "alexisonfire", "hatebreed", "knocked loose", "sleeping with sirens", "bleeding through",
-        "born of osiris", "carnifex", "crown the empire", "lorna shore", "polyphia", "stick to your guns", "suicide silence", "the acacia strain",
-        "the black dahlia murder", "veil of maya", "angelmaker", "chamber", "distant", "dropout kings", "escape the fate", "fire from the gods",
-        "gideon", "he is legend", "if i die first", "jynx", "left to suffer", "new years day", "omerta", "signs of the swarm", "spite",
-        "the callous daoboys", "the word alive", "traitors", "unitytx", "upon a burning body", "volumes"]
-a2 = ["blackbear", "simple plan", "sum 41", "3oh!3", "grandson", "the maine", "against the current", "maggie lindemann", "nothing,nowhere.",
-        "poorstacy", "set it off", "stand atlantic", "belmont", "bilmuri", "blackstarkids", "cemetery sun", "chad tepper", "concrete castles",
-        "first and forever", "girlfriends", "heart attack man", "john harvie", "keep flying", "lil aaron", "point north", "tramp stamps",
-        "tyler posey", "with confidence"]
-a3 = ["2 chainz", "rae sremmurd", "trippie redd", "tyga", "24kgoldn", "$not", "princess nokia", "waka flocka flame", "bankrol hayden", "cochise",
-        "idk", "jasiah", "lil darkie", "paris texas", "10k.caash", "22gz", "boobie lootaveli", "father", "freddie dredd", "haarper", "kah-lo",
-        "kay flock", "ken car$on", "kidd kenn", "kodoku", "kxllswxtch", "lancey foux", "lil gnar", "matt ox", "midwxst", "oliver francis", 
-        "omenxiii", "ppcocaine", "rich dunk", "robb bank$", "savage ga$p", "ssgkobe", "stunna 4 vegas", "travie mccoy", "yng martyr"]
 
 # Lists to add the URIs to
 s1 = []
@@ -55,11 +40,11 @@ for url in gets:
         uri = item['track']['uri']
         id = item['track']['id']
         artists = [s['name'].lower() for s in item['track']['artists']]
-        if any(name in a1 for name in artists):
+        if any(name in open('list1.txt').read() for name in artists):
             s1.append(id)
-        elif any(name in a2 for name in artists):
+        elif any(name in open('list2.txt').read() for name in artists):
             s2.append(id)
-        elif any(name in a3 for name in artists):
+        elif any(name in open('list3.txt').read() for name in artists):
             s3.append(id)
         else:
             print("could not find", item['track']['name'], "by", artists)
