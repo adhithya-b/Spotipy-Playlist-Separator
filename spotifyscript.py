@@ -1,25 +1,31 @@
 import requests
 import spotipy
 import spotipy.util as util
+import configparser
+
+# credentials read in from a config file
+config = configparser.ConfigParser()
+config.read('config.ini')
 
 # Getting auth token
 AUTH_URL = 'https://accounts.spotify.com/api/token'
 auth_response = requests.post(AUTH_URL, {
     'grant_type': 'client_credentials',
-    'client_id': '0c73fd524c97444da6dcf18cb94eabd3',
-    'client_secret': '5d35e5da6b804c76aeaa8c936cb4487f',
+    'client_id': config['spotify']['client_id'],
+    'client_secret': config['spotify']['client_secret_id'],
 })
 auth_response_data = auth_response.json()
 access_token = auth_response_data['access_token']
 headers = {
     'Authorization': 'Bearer {token}'.format(token=access_token)
 }
+
 #spotipy auth setup
 scope = 'playlist-modify-private'
 token = util.prompt_for_user_token('laser8000', scope,
-                                client_id='0c73fd524c97444da6dcf18cb94eabd3',
-                                client_secret='5d35e5da6b804c76aeaa8c936cb4487f',
-                                redirect_uri='http://localhost:8080')
+                                client_id = config['spotify']['client_id'],
+                                client_secret = config['spotify']['client_secret_id'],
+                                redirect_uri = config['spotify']['redirect_uri'])
 
 # API endpoints to get all the songs
 g1 = "https://api.spotify.com/v1/playlists/3ViW4euqk6opmrgEZV3sEv/tracks?limit=100"
@@ -37,14 +43,13 @@ for url in gets:
     response = requests.get(url, headers=headers)
     r = response.json()
     for item in r['items'] :
-        uri = item['track']['uri']
         id = item['track']['id']
         artists = [s['name'].lower() for s in item['track']['artists']]
-        if any(name in open('list1.txt').read() for name in artists):
+        if any(name in open('list1.txt').read().lower() for name in artists):
             s1.append(id)
-        elif any(name in open('list2.txt').read() for name in artists):
+        elif any(name in open('list2.txt').read().lower() for name in artists):
             s2.append(id)
-        elif any(name in open('list3.txt').read() for name in artists):
+        elif any(name in open('list3.txt').read().lower() for name in artists):
             s3.append(id)
         else:
             print("could not find", item['track']['name'], "by", artists)
